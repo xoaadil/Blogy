@@ -1,12 +1,12 @@
 import  express, {Response,Request} from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import {errorMiddleware} from "./middlewares/error.middleware"
+import errorHandler from "./middlewares/error.middleware"
 import authRoutes from "./routes/authRoutes";
 import postRoutes from "./routes/post.routes"
 dotenv.config();
 let app=express()
-
+import "./config/db";
 app.use(express.json());
 app.use(cors());
 
@@ -18,10 +18,10 @@ app.get("/",(req: Request,res: Response)=>{
 
 app.use("/api/auth",authRoutes);
 app.use("/api/post",postRoutes);
+app.use(errorHandler);
 
 
-import "./config/db";
-app.use(errorMiddleware);
+
 app.listen(PORT, () => {
     console.log(`app is working on ${PORT}`);
 })
