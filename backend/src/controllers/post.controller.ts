@@ -1,5 +1,6 @@
 import express, { Response, Request, NextFunction, response } from "express";
 import { z } from "zod";
+import { Types } from "mongoose";
 import Post from "../models/post.model";
 import User from "../models/user.model";
 const postSchema = z.object({
@@ -133,7 +134,13 @@ export const getAllPosts = async (
 ) => {
   try {
     let userId = req.userId;
-    let posts = await Post.find({ postedBy: userId });
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User ID is required" });
+    }
+    let userObjectId = new Types.ObjectId(userId);
+    let posts = await Post.find({ postedBy: userObjectId });
     if (!posts) {
       return res.status(203).json({
         message: "there is no post of your ",
@@ -144,6 +151,40 @@ export const getAllPosts = async (
         AllPosts: posts,
       });
     }
+  } catch (err) {
+    res.status(500);
+    next(err);
+  }
+};
+export const toggleLikePost  = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    let postId = req.params.id;
+    let userId = req.userId;
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User ID is required" });
+    }
+    let userObjectId = new Types.ObjectId(userId);
+    let post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({
+        message: "post doesnot exist",
+      });
+    }
+    let alreadyLiked = post.likedBy.includes(userObjectId);
+    if(alreadyLiked){
+    post.likedBy=post.likedBy.filter(id=>id!=userObjectId)
+    }
+    else{
+      post.likedBy.push(userObjectId);
+    }
+    await post.save();
+    return res.status(201).json({
+      message : (alreadyLiked)? "unliked" : "liked",
+      likes : post.likedBy.length,
+      likedBy: post.likedBy,
+    })
   } catch (err) {
     res.status(500);
     next(err);

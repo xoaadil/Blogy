@@ -4,6 +4,7 @@ import cors from "cors";
 import errorHandler from "./middlewares/error.middleware"
 import authRoutes from "./routes/authRoutes";
 import postRoutes from "./routes/post.routes"
+import commentRoutes from "./routes/comment.routes"
 dotenv.config();
 let app=express()
 import "./config/db";
@@ -18,6 +19,7 @@ app.get("/",(req: Request,res: Response)=>{
 
 app.use("/api/auth",authRoutes);
 app.use("/api/post",postRoutes);
+app.use("/api/comment",commentRoutes);
 app.use(errorHandler);
 
 

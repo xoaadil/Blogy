@@ -1,12 +1,11 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-// Define the interface for Post (not IUser)
 export interface IPost extends Document {
   title: string;
   content: string;
   createdAt: Date;
   postedBy: mongoose.Types.ObjectId;
-  likes: mongoose.Types.ObjectId[];
+  likedBy: mongoose.Types.ObjectId[];
   postImage?: string; // Optional field
 }
 
@@ -29,7 +28,7 @@ const postSchema = new Schema<IPost>({
     ref: "User", // Fixed: use string reference, not the model
     required: true,
   },
-  likes: [{
+  likedBy: [{
     type: Schema.Types.ObjectId,
     ref: "User",
   }], // Fixed: properly define array of ObjectIds
