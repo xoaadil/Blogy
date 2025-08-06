@@ -8,7 +8,7 @@ const storage = new CloudinaryStorage({
     return {
       folder: "blogy_uploads",
       allowed_formats: ["jpg", "png", "jpeg", "webp"],
-      public_id: file.originalname.split(".")[0], // optional
+      public_id: file.originalname.split(".")[0], 
     };
   },
 });

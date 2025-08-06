@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-// Extend Request type to include user info
+
 declare module "express-serve-static-core" {
   interface Request {
     userId?: string;
@@ -18,7 +18,7 @@ const isAuthorized = (req: Request, res: Response, next: NextFunction) => {
       return res.status(401).json({ message: "Token format invalid" });
     }
 
-    // ✅ Check 4: Verify token
+  
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET as string

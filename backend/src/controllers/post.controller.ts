@@ -38,7 +38,7 @@ export const CreateAPost = async (
     res.status(500);
     next(err);
   }
-};
+}; 
 export const deletePost = async (
   req: Request,
   res: Response,

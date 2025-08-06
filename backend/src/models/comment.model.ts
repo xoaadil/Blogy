@@ -16,12 +16,12 @@ const CommentSchema = new Schema<IComment>(
     },
     commentedBy: {
       type: Schema.Types.ObjectId,
-      ref: "User", // ✅ string name of model
+      ref: "User",
       required: true,
     },
     onPost: {
       type: Schema.Types.ObjectId,
-      ref: "Post", // ✅ string name of model
+      ref: "Post", 
       required: true,
     },
   },
