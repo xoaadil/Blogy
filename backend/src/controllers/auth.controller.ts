@@ -75,6 +75,7 @@ export const Login = async (
     email: z.string().email(),
     password: z.string().min(3).max(100),
   });
+  
 
   try {
     const result = loginSchema.safeParse(req.body);
@@ -88,6 +89,7 @@ export const Login = async (
     }
 
     const { email, password } = result.data;
+    console.log({ email, password });
     const user = await User.findOne({ email });
 
     if (!user) {

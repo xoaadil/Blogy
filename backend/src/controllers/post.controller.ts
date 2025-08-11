@@ -5,7 +5,7 @@ import Post from "../models/post.model";
 import User from "../models/user.model";
 const postSchema = z.object({
   title: z.string().min(3).max(200),
-  content: z.string().min(3).max(5000),
+  content: z.string().min(3).max(50000),
 });
 export const CreateAPost = async (
   req: Request,
@@ -38,7 +38,7 @@ export const CreateAPost = async (
     res.status(500);
     next(err);
   }
-}; 
+};
 export const deletePost = async (
   req: Request,
   res: Response,
@@ -127,7 +127,7 @@ export const editAPost = async (
     next(err);
   }
 };
-export const getAllPosts = async (
+export const getAllPostsOfUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -156,7 +156,11 @@ export const getAllPosts = async (
     next(err);
   }
 };
-export const toggleLikePost  = async (req: Request, res: Response, next: NextFunction) => {
+export const toggleLikePost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     let postId = req.params.id;
     let userId = req.userId;
@@ -173,18 +177,33 @@ export const toggleLikePost  = async (req: Request, res: Response, next: NextFun
       });
     }
     let alreadyLiked = post.likedBy.includes(userObjectId);
-    if(alreadyLiked){
-    post.likedBy=post.likedBy.filter(id=>id!=userObjectId)
-    }
-    else{
+    if (alreadyLiked) {
+      post.likedBy = post.likedBy.filter((id) => id != userObjectId);
+    } else {
       post.likedBy.push(userObjectId);
     }
     await post.save();
     return res.status(201).json({
-      message : (alreadyLiked)? "unliked" : "liked",
-      likes : post.likedBy.length,
+      message: alreadyLiked ? "unliked" : "liked",
+      likes: post.likedBy.length,
       likedBy: post.likedBy,
-    })
+    });
+  } catch (err) {
+    res.status(500);
+    next(err);
+  }
+};
+export const getAllPosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let posts = await Post.find();
+    return res.status(200).json({
+      message: "here is your all post ",
+      AllPosts: posts,
+    });
   } catch (err) {
     res.status(500);
     next(err);

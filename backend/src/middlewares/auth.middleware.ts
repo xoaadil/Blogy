@@ -12,7 +12,7 @@ declare module "express-serve-static-core" {
 
 const isAuthorized = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.headers.token as string;
+    const token = localStorage.getItem("token") as string;
 
     if (!token) {
       return res.status(401).json({ message: "Token format invalid" });
