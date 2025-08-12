@@ -177,8 +177,14 @@ export const toggleLikePost = async (
       });
     }
     let alreadyLiked = post.likedBy.includes(userObjectId);
+      console.log("check karte ha like ko")
     if (alreadyLiked) {
-      post.likedBy = post.likedBy.filter((id) => id != userObjectId);
+      console.log("check ho gya phele se he like ha")
+      console.log(userObjectId); 
+      console.log(post.likedBy)
+     post.likedBy = post.likedBy.filter((_id) => _id.toString() !== userObjectId.toString());
+
+      console.log(post.likedBy)
     } else {
       post.likedBy.push(userObjectId);
     }
@@ -198,8 +204,32 @@ export const getAllPosts = async (
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    let posts = await Post.find();
+  try { 
+  let posts = await Post.aggregate([
+  {
+    $lookup: {
+      from: "comments",           // collection name in MongoDB
+      localField: "_id",          // Post's _id
+      foreignField: "onPost",     // Comment's onPost
+      as: "comments"
+    }
+  },
+  {
+    $addFields: {
+      commentCount: { $size: "$comments" }
+    }
+  },
+  {
+    $project: {
+      comments: 0 // exclude the full comments array
+    }
+  }
+]);
+
+// Populate postedBy with name & avatar
+posts = await Post.populate(posts, { path: "postedBy", select: "name avatar" });
+
+    
     return res.status(200).json({
       message: "here is your all post ",
       AllPosts: posts,
@@ -209,3 +239,20 @@ export const getAllPosts = async (
     next(err);
   }
 };
+
+export const singlePost=async(  req: Request,
+  res: Response,
+  next: NextFunction)=>{
+  let id=req.params.id;
+  try{
+let post= await Post.findById(id);
+return res.status(200).json({
+  message : " here is your post",
+  Post : post
+})
+  }
+  catch(err){
+
+  }
+
+}

@@ -4,7 +4,7 @@ import Signup from './page/signup'
 import Login from "./page/Login"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import HomePage from './page/Home'
-
+import Post from "./page/Post"
 function App() {
  
 
@@ -17,6 +17,7 @@ function App() {
       <Route  path='/Signup' element={<Signup/>}/>
       <Route path='/Login' element={<Login/>} />
       <Route path='/Home' element={<HomePage/>} />
+      <Route path='/Post/:id' element={<Post/>} />
       
     </Routes>
     </BrowserRouter>

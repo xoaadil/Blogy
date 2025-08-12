@@ -10,7 +10,7 @@ export const userDetails = async (
   next: NextFunction
 ) => {
   try {
-    let userId = new Types.ObjectId(req.userId);
+    let userId = new Types.ObjectId(req.params.id);
 let user = await User.findById(userId).select('-password');
 
     if (!user) {

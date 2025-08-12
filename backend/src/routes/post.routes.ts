@@ -1,6 +1,6 @@
 import express,{Response,Request} from "express";
 const router = express.Router();
-import {CreateAPost, deletePost, editAPost, getAllPostsOfUser, toggleLikePost,getAllPosts} from "../controllers/post.controller"
+import {CreateAPost, deletePost, editAPost, getAllPostsOfUser, toggleLikePost,getAllPosts,singlePost} from "../controllers/post.controller"
 import isAuthorized from "../middlewares/auth.middleware";
 import upload from "../middlewares/upload.middleware";
 
@@ -13,4 +13,5 @@ router.put("/:id",isAuthorized,editAPost);
 router.get("/:id",isAuthorized,getAllPostsOfUser);
 router.post("/like/:id",isAuthorized,toggleLikePost);
 router.get("/",getAllPosts)
+router.get("/single/:id",singlePost);
 export default router;
