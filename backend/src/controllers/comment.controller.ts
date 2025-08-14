@@ -128,4 +128,16 @@ export const deleteComment = async (
   }
 };
 
+export const CommentsOnPost = async (req:Request,res:Response,next : NextFunction)=>{
+  const postId=req.params.id;
+  try{
+let comments= await Comment.find({onPost : postId}).populate("user" , "_id name avatar");
+res.json(comments);
+  }
+  catch(err){
+    res.status(500);
+    next(err);
+  }
+}
+
 

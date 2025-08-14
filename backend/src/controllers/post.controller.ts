@@ -246,6 +246,7 @@ export const singlePost=async(  req: Request,
   let id=req.params.id;
   try{
 let post= await Post.findById(id);
+post = await Post.populate(post, { path: "postedBy", select: " _id name avatar" });
 return res.status(200).json({
   message : " here is your post",
   Post : post
