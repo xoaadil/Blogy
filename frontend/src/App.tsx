@@ -5,12 +5,13 @@ import Login from "./page/Login"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import HomePage from './page/Home'
 import Post from "./page/Post"
+import { ThemeProvider } from 'next-themes'
 function App() {
  
 
   return (
     <>
-  
+    <ThemeProvider attribute="class">
     <BrowserRouter>
     <Routes>
       <Route  path='/Landing' element={<Landing/>} />
@@ -21,6 +22,7 @@ function App() {
       
     </Routes>
     </BrowserRouter>
+    </ThemeProvider>
       
     </>
   )
