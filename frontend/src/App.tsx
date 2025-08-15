@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import HomePage from './page/Home'
 import Post from "./page/Post"
 import { ThemeProvider } from 'next-themes'
+import { Profile } from './page/Profile'
 function App() {
  
 
@@ -19,7 +20,7 @@ function App() {
       <Route path='/Login' element={<Login/>} />
       <Route path='/Home' element={<HomePage/>} />
       <Route path='/Post/:id' element={<Post/>} />
-      
+      <Route path='/Profile/:id' element={<Profile/>} />
     </Routes>
     </BrowserRouter>
     </ThemeProvider>

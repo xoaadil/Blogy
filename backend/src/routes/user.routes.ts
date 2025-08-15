@@ -3,6 +3,6 @@ import { userAllComments, userAllPosts, userDetails } from "../controllers/user.
 import isAuthorized from "../middlewares/auth.middleware";
 let router =express.Router();
 router.get("/:id",userDetails);
-router.get("/posts",isAuthorized,userAllPosts);
-router.get("/comments",isAuthorized,userAllComments)
+router.get("/posts/:id",userAllPosts);
+router.get("/comments/:id",userAllComments);
 export default router;

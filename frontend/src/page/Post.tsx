@@ -164,6 +164,7 @@ if(loding) return (
           <div className="p-6 border-b border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
+                
                 <img 
                   src={post?.postedBy?.avatar} 
                   alt="User avatar" 

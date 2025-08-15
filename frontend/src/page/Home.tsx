@@ -131,7 +131,8 @@ function PostCard({ post, currentUser, onEdit, onDelete }: {
       <div className="p-4 border-b border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <img 
+            <button className="" onClick={()=>navigate(`/Profile/${post.postedBy._id}`)}>
+   <img 
               src={post.postedBy.avatar} 
               alt="User avatar" 
               className="w-10 h-10 rounded-full border-2 border-gray-200 dark:border-gray-600 object-cover"
@@ -148,6 +149,9 @@ function PostCard({ post, currentUser, onEdit, onDelete }: {
                 })}
               </span>
             </div>
+
+            </button>
+         
           </div>
 
           {/* 3-Dot Menu */}
