@@ -52,7 +52,7 @@ export const Signup = async (
     });
 
     const token = generateToken(newUser._id as string);
-
+      
     return res.status(201).json({
       success: true,
       message: "Signup successful",

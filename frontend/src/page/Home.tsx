@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { MoreHorizontal, Copy, Edit, Trash2, Eye, Heart, MessageCircle } from "lucide-react";
+import { MoreHorizontal, Copy, Edit, Trash2, Eye, Heart, MessageCircle, Plus } from "lucide-react";
 
 export interface postType {
   title: string;
@@ -31,7 +31,6 @@ export interface likeResponse {
   likedBy: [];
 }
 
-// Post Card Component with 3-dot menu
 function PostCard({ post, currentUser, onEdit, onDelete }: {
   post: postType;
   currentUser: { _id: string; role: string; name: string } | null;
@@ -50,7 +49,6 @@ function PostCard({ post, currentUser, onEdit, onDelete }: {
   const canEditDelete = currentUser && 
     (currentUser._id === post.postedBy._id || currentUser.role === 'admin');
 
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -125,71 +123,65 @@ function PostCard({ post, currentUser, onEdit, onDelete }: {
     (post.content.split(" ").length > 15 ? "..." : "");
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 mb-6 h-fit">
+    <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 mb-6 h-fit">
       
       {/* Post Header */}
-      <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+      <div className="p-4 border-b border-slate-700/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <button className="" onClick={()=>navigate(`/Profile/${post.postedBy._id}`)}>
-   <img 
-              src={post.postedBy.avatar} 
-              alt="User avatar" 
-              className="w-10 h-10 rounded-full border-2 border-gray-200 dark:border-gray-600 object-cover"
-            />
-            <div>
-              <p className="font-semibold text-gray-900 dark:text-white text-sm">
-                {post.postedBy.name}
-              </p>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                {new Date(post.updatedAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric'
-                })}
-              </span>
-            </div>
-
+            <button onClick={() => navigate(`/Profile/${post.postedBy._id}`)} className="flex items-center space-x-3">
+              <img 
+                src={post.postedBy.avatar} 
+                alt="User avatar" 
+                className="w-10 h-10 rounded-full border-2 border-slate-600 object-cover"
+              />
+              <div>
+                <p className="font-semibold text-white text-sm">
+                  {post.postedBy.name}
+                </p>
+                <span className="text-xs text-slate-400">
+                  {new Date(post.updatedAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  })}
+                </span>
+              </div>
             </button>
-         
           </div>
 
           {/* 3-Dot Menu */}
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+              className="p-2 rounded-full hover:bg-slate-700/50 transition-colors duration-200"
             >
-              <MoreHorizontal className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+              <MoreHorizontal className="w-5 h-5 text-slate-400" />
             </button>
 
             {showMenu && (
-              <div className="absolute right-0 mt-1 w-36 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-600 py-2 z-20">
-                
-                {/* Copy Option */}
+              <div className="absolute right-0 mt-1 w-36 bg-slate-800 rounded-lg shadow-xl border border-slate-700/50 py-2 z-20">
                 <button
                   onClick={handleCopy}
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-3"
+                  className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-700/50 flex items-center space-x-3"
                 >
                   <Copy className="w-4 h-4" />
                   <span>Copy</span>
                 </button>
 
-                {/* See More Option */}
                 <button
                   onClick={() => navigate(`/post/${post._id}`)}
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-3"
+                  className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-700/50 flex items-center space-x-3"
                 >
                   <Eye className="w-4 h-4" />
                   <span>See More</span>
                 </button>
 
-                {/* Edit & Delete - Only for owner or admin */}
                 {canEditDelete && (
                   <>
                     <button
                       onClick={handleEdit}
-                      className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-3"
+                      className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-700/50 flex items-center space-x-3"
                     >
                       <Edit className="w-4 h-4" />
                       <span>Edit</span>
@@ -197,7 +189,7 @@ function PostCard({ post, currentUser, onEdit, onDelete }: {
                     
                     <button
                       onClick={handleDelete}
-                      className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3"
+                      className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-900/20 flex items-center space-x-3"
                     >
                       <Trash2 className="w-4 h-4" />
                       <span>Delete</span>
@@ -212,40 +204,38 @@ function PostCard({ post, currentUser, onEdit, onDelete }: {
 
       {/* Post Content */}
       <div className="p-4">
-        {/* Post Image */}
         {post.postImage && (
           <div className="mb-3">
             <img 
               src={post.postImage} 
               alt="Post image" 
-              className="w-full h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+              className="w-full h-48 object-cover rounded-lg border border-slate-700/50"
             />
           </div>
         )}
 
-        {/* Editable Content */}
         {isEditing ? (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-slate-300 mb-1">
                 Title
               </label>
               <input
                 type="text"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                className="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full p-2 text-sm border border-slate-600 rounded-lg bg-slate-700/50 text-white"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-slate-300 mb-1">
                 Content
               </label>
               <textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
-                className="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
+                className="w-full p-2 text-sm border border-slate-600 rounded-lg bg-slate-700/50 text-white resize-none"
                 rows={3}
               />
             </div>
@@ -253,13 +243,13 @@ function PostCard({ post, currentUser, onEdit, onDelete }: {
             <div className="flex space-x-2">
               <button
                 onClick={handleSaveEdit}
-                className="px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+                className="px-3 py-2 text-sm bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-medium rounded-lg transition-colors duration-200"
               >
                 Save
               </button>
               <button
                 onClick={handleCancelEdit}
-                className="px-3 py-2 text-sm bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium rounded-lg transition-colors duration-200"
+                className="px-3 py-2 text-sm bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg transition-colors duration-200"
               >
                 Cancel
               </button>
@@ -267,21 +257,18 @@ function PostCard({ post, currentUser, onEdit, onDelete }: {
           </div>
         ) : (
           <>
-            {/* Title */}
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
+            <h2 className="text-lg font-bold text-white mb-2 line-clamp-2">
               {post.title}
             </h2>
             
-            {/* Content Preview */}
-            <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3 line-clamp-3">
+            <p className="text-slate-300 text-sm leading-relaxed mb-3 line-clamp-3">
               {truncatedContent}
             </p>
 
-            {/* See More Button */}
             {post.content.split(" ").length > 15 && (
               <button
                 onClick={() => navigate(`/post/${post._id}`)}
-                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium text-sm mb-3"
+                className="text-blue-400 hover:text-blue-300 font-medium text-sm mb-3"
               >
                 Read more
               </button>
@@ -291,22 +278,19 @@ function PostCard({ post, currentUser, onEdit, onDelete }: {
       </div>
 
       {/* Post Actions */}
-      <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+      <div className="px-4 py-3 border-t border-slate-700/50 bg-slate-800/30">
         <div className="flex items-center justify-between">
-          
-          {/* Like Button */}
           <button
             onClick={handleLike}
-            className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
+            className="flex items-center space-x-2 text-slate-400 hover:text-red-400 transition-colors duration-200"
           >
             <Heart className="w-4 h-4" />
             <span className="font-medium text-sm">{likes}</span>
           </button>
 
-          {/* Comments */}
           <button
             onClick={() => navigate(`/post/${post._id}`)}
-            className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200"
+            className="flex items-center space-x-2 text-slate-400 hover:text-blue-400 transition-colors duration-200"
           >
             <MessageCircle className="w-4 h-4" />
             <span className="font-medium text-sm">{post.commentCount}</span>
@@ -321,7 +305,6 @@ export default function HomePage() {
   const [posts, setPosts] = useState<postType[]>([]);
   const [currentUser, setCurrentUser] = useState<{_id: string, role: string, name: string} | null>(null);
 
-  // Get current user from localStorage
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -329,7 +312,6 @@ export default function HomePage() {
     }
   }, []);
 
-  // Fetch posts
   useEffect(() => {
     fetch("http://localhost:5000/api/post/")
       .then((res) => res.json())
@@ -337,7 +319,6 @@ export default function HomePage() {
       .catch(() => toast.error("Failed to load posts"));
   }, []);
 
-  // Handle post edit
   const handleEditPost = async (postId: string, newTitle: string, newContent: string) => {
     try {
       const res = await fetch(`http://localhost:5000/api/post/${postId}`, {
@@ -350,7 +331,6 @@ export default function HomePage() {
       });
 
       if (res.ok) {
-        // Update local state
         setPosts(prev => prev.map(p => 
           p._id === postId 
             ? { ...p, title: newTitle, content: newContent }
@@ -364,7 +344,6 @@ export default function HomePage() {
     }
   };
 
-  // Handle post delete
   const handleDeletePost = async (postId: string) => {
     try {
       const res = await fetch(`http://localhost:5000/api/post/${postId}`, {
@@ -375,7 +354,6 @@ export default function HomePage() {
       });
 
       if (res.ok) {
-        // Remove from local state
         setPosts(prev => prev.filter(p => p._id !== postId));
         toast.success("Post deleted successfully!");
       }
@@ -385,32 +363,48 @@ export default function HomePage() {
     }
   };
 
+  const navigate = useNavigate();
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <ToastContainer />
-      
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 py-6">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Latest Posts
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Discover what's happening in your community
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Background decoration */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
       </div>
 
+      <ToastContainer 
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+      
+      {/* Header */}
+    
+
       {/* Posts Container */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {posts.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400 text-lg">
-              No posts yet. Be the first to share something!
+            <p className="text-slate-400 text-lg">
+              No stories yet. Be the first to share something!
             </p>
+            <button 
+              onClick={() => navigate("/create-post")}
+              className="mt-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold py-2 px-6 rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
+            >
+              Create Your First Story
+            </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
               <PostCard
                 key={post._id}
