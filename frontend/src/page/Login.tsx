@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, Mail, Lock, BookOpen, Sun, Moon } from "lucide-react";
 import { Link } from "react-router-dom";
-
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 type Theme = 'light' | 'dark';
 
 interface loginInfo {
@@ -81,11 +81,11 @@ export default function Login() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/Login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+     const res = await fetch(`${BASE_URL}/auth/Login`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ email, password }),
+});
 
       const data: loginInfo = await res.json();
 

@@ -5,32 +5,61 @@ import { BookOpen, ArrowRight, Edit3, Sun, Moon } from 'lucide-react';
 type Theme = 'light' | 'dark';
 
 const Landing = () => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    // Check localStorage first, then system preference
-    const savedTheme = localStorage.getItem('theme') as Theme;
-    if (savedTheme) return savedTheme;
+  // Initialize with light mode first, then update in useEffect
+  const [theme, setTheme] = useState<Theme>('light');
+  const [mounted, setMounted] = useState(false);
+
+  // Initialize theme after component mounts to avoid hydration issues
+  useEffect(() => {
+    const initializeTheme = () => {
+      // Check if we're in the browser
+      if (typeof window !== 'undefined') {
+        const savedTheme = localStorage.getItem('theme') as Theme;
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const initialTheme = savedTheme || systemTheme;
+        
+        setTheme(initialTheme);
+        setMounted(true);
+      }
+    };
     
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
+    initializeTheme();
+  }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
+    
+    // Save to localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('theme', newTheme);
+    }
   };
 
+  // Apply theme to document
   useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
-    root.classList.add(theme);
-  }, [theme]);
+    if (mounted) {
+      const root = document.documentElement;
+      root.classList.remove('light', 'dark');
+      root.classList.add(theme);
+      
+      // Also update the class attribute directly as a fallback
+      if (theme === 'dark') {
+        root.setAttribute('class', 'dark');
+      } else {
+        root.removeAttribute('class');
+      }
+    }
+  }, [theme, mounted]);
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 opacity-50" />
       <div className="absolute top-20 left-20 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite]" />
-      <div className="absolute bottom-20 right-20 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl animate-[float_8s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
+      <div className="absolute bottom-20 right-20 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl animate-[float_8s_ease-in-out_infinite] delay-1000" />
       
       {/* Header */}
       <header className="relative z-10 flex justify-between items-center p-6">
@@ -38,13 +67,13 @@ const Landing = () => {
           <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
             <BookOpen className="w-6 h-6 text-white" />
           </div>
-          <span className="text-2xl font-bold text-gray-900 dark:text-white">BLOGY</span>
+          <span className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">BLOGY</span>
         </div>
         
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          className="p-3 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 ring-2 ring-transparent hover:ring-gray-300 dark:hover:ring-gray-600"
           aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >
           <div className="relative w-6 h-6">
@@ -71,12 +100,12 @@ const Landing = () => {
         <div className="text-center max-w-4xl mx-auto">
           {/* Hero Headline */}
           <div className="mb-12">
-            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6 animate-[float_4s_ease-in-out_infinite]">
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6 animate-[float_4s_ease-in-out_infinite] transition-colors">
               Your Stories,
               <br />
               Your Voice
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed transition-colors">
               Join a community of passionate writers and share your unique perspective with the world.
             </p>
           </div>
@@ -115,30 +144,30 @@ const Landing = () => {
               <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                 <Edit3 className="w-4 h-4 text-blue-500" />
               </div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Write & Publish</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">Beautiful editor for crafting your stories</p>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2 transition-colors">Write & Publish</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors">Beautiful editor for crafting your stories</p>
             </div>
             
             <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg rounded-xl p-6 text-center group hover:scale-105 transition-all duration-300 shadow-lg border border-gray-200 dark:border-gray-700">
               <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                 <BookOpen className="w-4 h-4 text-purple-500" />
               </div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Discover</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">Explore amazing stories from writers worldwide</p>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2 transition-colors">Discover</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors">Explore amazing stories from writers worldwide</p>
             </div>
             
             <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg rounded-xl p-6 text-center group hover:scale-105 transition-all duration-300 shadow-lg border border-gray-200 dark:border-gray-700">
               <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                 <ArrowRight className="w-4 h-4 text-blue-500" />
               </div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Connect</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">Build your audience and engage with readers</p>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2 transition-colors">Connect</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors">Build your audience and engage with readers</p>
             </div>
           </div>
         </div>
       </main>
 
-  {/* Footer */}
+      {/* Footer */}
       <footer className="relative z-10 border-t border-gray-200/50 dark:border-gray-700/50 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl mt-20">
         <div className="max-w-6xl mx-auto px-6 py-12">
           {/* Main Footer Content */}
@@ -149,9 +178,9 @@ const Landing = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                   <BookOpen className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">BLOGY</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">BLOGY</span>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed max-w-md">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed max-w-md transition-colors">
                 Share your thoughts, connect with writers, and discover amazing content. Join our community of passionate storytellers and creative minds.
               </p>
               
@@ -197,51 +226,9 @@ const Landing = () => {
               </div>
             </div>
 
-            {/* Links Section - Mobile side by side, Desktop separate columns */}
-            <div className="col-span-1 lg:hidden grid grid-cols-2 gap-8">
-              {/* Quick Links */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Links</h3>
-                <nav className="flex flex-col space-y-3">
-                  <Link to="/home" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
-                    Home
-                  </Link>
-                  <Link to="/explore" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
-                    Explore
-                  </Link>
-                  <Link to="/trending" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
-                    Trending
-                  </Link>
-                  <Link to="/categories" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
-                    Categories
-                  </Link>
-                </nav>
-              </div>
-              
-              {/* Support */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Support</h3>
-                <nav className="flex flex-col space-y-3">
-                  <Link to="/help" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
-                    Help Center
-                  </Link>
-                  <Link to="/about" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
-                    About Us
-                  </Link>
-                  <Link to="/contact" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
-                    Contact
-                  </Link>
-                  <Link to="/feedback" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
-                    Feedback
-                  </Link>
-                </nav>
-              </div>
-            </div>
-
-            {/* Desktop Layout - Separate columns */}
             {/* Quick Links - Desktop */}
             <div className="hidden lg:block space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Links</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors">Quick Links</h3>
               <nav className="flex flex-col space-y-3">
                 <Link to="/home" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
                   Home
@@ -260,7 +247,7 @@ const Landing = () => {
             
             {/* Support - Desktop */}
             <div className="hidden lg:block space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Support</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors">Support</h3>
               <nav className="flex flex-col space-y-3">
                 <Link to="/help" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
                   Help Center
@@ -276,12 +263,51 @@ const Landing = () => {
                 </Link>
               </nav>
             </div>
+
+            {/* Mobile Layout */}
+            <div className="col-span-1 lg:hidden grid grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors">Quick Links</h3>
+                <nav className="flex flex-col space-y-3">
+                  <Link to="/home" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
+                    Home
+                  </Link>
+                  <Link to="/explore" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
+                    Explore
+                  </Link>
+                  <Link to="/trending" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
+                    Trending
+                  </Link>
+                  <Link to="/categories" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
+                    Categories
+                  </Link>
+                </nav>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors">Support</h3>
+                <nav className="flex flex-col space-y-3">
+                  <Link to="/help" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
+                    Help Center
+                  </Link>
+                  <Link to="/about" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
+                    About Us
+                  </Link>
+                  <Link to="/contact" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
+                    Contact
+                  </Link>
+                  <Link to="/feedback" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-sm">
+                    Feedback
+                  </Link>
+                </nav>
+              </div>
+            </div>
           </div>
           
           {/* Bottom Section */}
           <div className="border-t border-gray-200/30 dark:border-gray-700/30 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-gray-500 dark:text-gray-400 text-sm">
+              <p className="text-gray-500 dark:text-gray-400 text-sm transition-colors">
                 © 2025 BLOGY. All rights reserved.
               </p>
               
@@ -300,7 +326,7 @@ const Landing = () => {
             
             {/* Developer Credit */}
             <div className="mt-4 pt-4 border-t border-gray-200/20 dark:border-gray-700/20 text-center">
-              <p className="text-xs text-gray-400 dark:text-gray-500">
+              <p className="text-xs text-gray-400 dark:text-gray-500 transition-colors">
                 Crafted with ❤️ by Aadil Siddiqui
               </p>
             </div>

@@ -6,6 +6,8 @@ import axios from "axios";
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
 import CommentWithMenu from "./CommentWithMenu ";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
 export interface postApi {
   title: string;
   content: string;
@@ -53,7 +55,7 @@ export default function Post() {
   }
   try {
     const res = await axios.post(
-      "http://localhost:5000/api/comment/"+ id,
+      `${BASE_URL}/comment/${id}`,
       { content },
       {
         headers: {
@@ -70,7 +72,7 @@ export default function Post() {
 
   useEffect(() => {
     setLoding(true);
-    fetch("http://localhost:5000/api/post/single/" + id)
+    fetch(`${BASE_URL}/post/single/${id}`)
       .then((res) => res.json())
       .then((data: postResponse) => {
         console.log("API Response:", data);
@@ -82,7 +84,7 @@ export default function Post() {
   useEffect(() => {
     setLoding(true);
     axios
-      .get<commentApi[]>("http://localhost:5000/api/comment/" + id)
+      .get<commentApi[]>(`${BASE_URL}/comment/${id}`)
       .then((res) => {
         console.log(" comment API Response:", res);
         setComment(res.data);
@@ -105,7 +107,7 @@ export default function Post() {
   // Handle comment edit
   const handleEditComment = async (commentId: string, newContent: string) => {
     try {
-      await axios.put(`http://localhost:5000/api/comment/${commentId}`, 
+      await axios.put(`${BASE_URL}/comment/${commentId}`, 
         { content: newContent },
         {
           headers: {
@@ -129,7 +131,7 @@ export default function Post() {
   // Handle comment delete
   const handleDeleteComment = async (commentId: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/comment/${commentId}`, {
+      await axios.delete(`${BASE_URL}/comment/${commentId}`, {
         headers: {
           token: localStorage.getItem("token") || "",
         },

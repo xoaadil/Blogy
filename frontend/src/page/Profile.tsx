@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export interface userApi {
   name: string;
@@ -51,7 +52,7 @@ export const Profile = () => {
     if (!id) return;
     setLoading(true);
     axios
-      .get(`http://localhost:5000/api/user/${id}`)
+      .get(`${BASE_URL}/user/${id}`)
       .then((res) => {
         setUser(res.data);
       })
@@ -63,7 +64,7 @@ export const Profile = () => {
   useEffect(() => {
     if (!id) return;
     axios
-      .get(`http://localhost:5000/api/user/comments/${id}`)
+      .get(`${BASE_URL}/user/comments/${id}`)
       .then((res) => {
         setComments(res.data);
       })
@@ -74,7 +75,7 @@ export const Profile = () => {
   useEffect(() => {
     if (!id) return;
     axios
-      .get(`http://localhost:5000/api/user/posts/${id}`)
+      .get(`${BASE_URL}/user/posts/${id}`)
       .then((res) => {
         setPosts(res.data);
       })

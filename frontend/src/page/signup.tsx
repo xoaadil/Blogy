@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, ArrowRight, Edit3, Sun, Moon } from 'lucide-react';
-
+import { BookOpen, Edit3, Sun, Moon } from 'lucide-react';
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 type Theme = 'light' | 'dark';
 
 interface userinfo{
@@ -77,7 +77,7 @@ const [theme, setTheme] = useState<Theme>(() => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/Signup", {
+      const res = await fetch(`${BASE_URL}/auth/Signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, name, admincode }),
