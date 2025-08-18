@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Post from "../components/Post"
-
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export interface userApi {
@@ -130,7 +129,8 @@ export const Profile = () => {
                               key={post._id}
                               post={post}
                               currentUser={currentUser}
-                              
+                              onEdit={handleEditPost}
+                              onDelete={handleDeletePost}
                             />
             ))}
           </div>
