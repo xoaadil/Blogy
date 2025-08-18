@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import Post from "../components/Post"
+
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export interface userApi {
@@ -122,22 +124,14 @@ export const Profile = () => {
       {/* Content */}
       {activeTab === "posts" ? (
         posts.length > 0 ? (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
-              <div
-                key={post._id}
-                className="p-4 border rounded-lg shadow-sm bg-white"
-              >
-                <h2 className="text-lg font-semibold">{post.title}</h2>
-                <p className="text-gray-700">{post.content}</p>
-                {post.postImage && (
-                  <img
-                    src={post.postImage}
-                    alt=""
-                    className="mt-2 rounded-lg max-h-64 object-cover"
-                  />
-                )}
-              </div>
+              <Post
+                              key={post._id}
+                              post={post}
+                              currentUser={currentUser}
+                              
+                            />
             ))}
           </div>
         ) : (

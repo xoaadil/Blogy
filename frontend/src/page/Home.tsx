@@ -28,7 +28,7 @@ export default function HomePage() {
       .catch(() => toast.error("Failed to load posts"));
   }, []);
 
-  const handleEditPost = async (postId: string, newTitle: string, newContent: string) => {
+    const handleEditPost = async (postId: string, newTitle: string, newContent: string) => {
     try {
       const res = await fetch(`${BASE_URL}/post/${postId}`, {
         method: "PUT",
