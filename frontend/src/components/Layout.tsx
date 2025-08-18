@@ -143,7 +143,7 @@ export const Header = () => {
   };
 
   const handleLogoClick = () => {
-    window.location.href = "/";
+    window.location.href = "/home";
     setShowMobileMenu(false);
   };
 
