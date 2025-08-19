@@ -12,6 +12,7 @@ export interface ApiResponse {
 export default function HomePage() {
   const [posts, setPosts] = useState<postType[]>([]);
   const [currentUser, setCurrentUser] = useState<{_id: string, role: string, name: string} | null>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,8 +25,14 @@ export default function HomePage() {
   useEffect(() => {
     fetch(`${BASE_URL}/post`)
       .then((res) => res.json())
-      .then((data: ApiResponse) => setPosts(data.AllPosts))
-      .catch(() => toast.error("Failed to load posts"));
+      .then((data: ApiResponse) => {
+        setPosts(data.AllPosts);
+        setLoading(false);
+      })
+      .catch(() => {
+        toast.error("Failed to load posts");
+        setLoading(false);
+      });
   }, []);
 
     const handleEditPost = async (postId: string, newTitle: string, newContent: string) => {
@@ -114,7 +121,7 @@ export default function HomePage() {
             </select>
             
             <button 
-              onClick={() => navigate("/create-post")}
+              onClick={() => navigate("/createpost")}
               className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 text-sm"
             >
               + New Post
@@ -125,8 +132,12 @@ export default function HomePage() {
 
       {/* Posts Container */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-
-        {posts.length === 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mb-4"></div>
+            <p className="text-slate-400 text-lg">Loading posts...</p>
+          </div>
+        ) : posts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-slate-400 text-lg">
               No stories yet. Be the first to share something!

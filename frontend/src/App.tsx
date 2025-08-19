@@ -8,6 +8,7 @@ import Post from "./page/Post"
 import { ThemeProvider } from 'next-themes'
 import { Profile } from './page/Profile'
 import Layout from "./components/Layout"
+import CreatePost from './page/CreatePost';
 function App() {
  
 
@@ -26,6 +27,7 @@ function App() {
   <Route path="/Home"    element={<Layout><HomePage/></Layout>} />
   <Route path="/Post/:id"    element={<Layout><Post/></Layout>} />
   <Route path="/Profile/:id" element={<Layout><Profile/></Layout>} />
+  <Route path="/createpost" element={<Layout><CreatePost/></Layout>} />
 </Routes>
     </BrowserRouter>
     </ThemeProvider>
