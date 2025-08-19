@@ -28,6 +28,7 @@ function App() {
   <Route path="/Post/:id"    element={<Layout><Post/></Layout>} />
   <Route path="/Profile/:id" element={<Layout><Profile/></Layout>} />
   <Route path="/createpost" element={<Layout><CreatePost/></Layout>} />
+  <Route path= "*" element ={<Landing/>} />
 </Routes>
     </BrowserRouter>
     </ThemeProvider>
